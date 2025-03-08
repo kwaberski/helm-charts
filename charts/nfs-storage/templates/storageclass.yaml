@@ -1,0 +1,11 @@
+---
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+  name: nfs-sc-basic # IMPORTANT pvc needs to mention this name
+provisioner: prov-nfs-sc-basic # same as PROVISIONER_NAME env variable in the provisioner
+parameters:
+  archiveOnDelete: "false"
+mountOptions:
+  - hard
+  - nfsvers=4.1

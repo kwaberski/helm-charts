@@ -1,0 +1,50 @@
+---
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: nfs-pod-provisioner
+  namespace: {{ include "storage.namespace" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: nfs-pod-provisioner  
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: nfs-pod-provisioner
+    spec:
+      {{- with .Values.podSecurityContext }}
+      securityContext:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: nfs-pod-provisioner-sa # name of service account created in rbac.yaml
+      containers:
+        - name: nfs-pod-provisioner
+          image: {{ .Values.image.registry | default "gcr.io" }}/{{ .Values.image.repository | default "k8s-staging-sig-storage/nfs-subdir-external-provisioner" }}:{{ .Values.image.tag | default .Chart.AppVersion }}
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          {{- with .Values.securityContext }}
+          securityContext:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          {{- with .Values.resources }}
+          resources:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+          volumeMounts:
+            - name: nfs-provisioner-v
+              mountPath: /persistentvolumes
+          env:
+            - name: PROVISIONER_NAME # do not change
+              value: prov-nfs-sc-basic # SAME AS PROVISONER NAME VALUE IN STORAGECLASS
+            - name: NFS_SERVER # do not change
+              value: {{ include "storage.nfsServerIP" . }} # Ip of the NFS SERVER
+            - name: NFS_PATH # do not change
+              value: {{ include "storage.nfsMountPath" . }} # path to nfs directory setup
+      volumes:
+       - name: nfs-provisioner-v # same as volumemouts name
+         nfs:
+           server: {{ include "storage.nfsServerIP" . }}
+           path: {{ include "storage.nfsMountPath" . }}

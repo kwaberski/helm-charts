@@ -1,6 +1,7 @@
 # Default values for nfs-storage.
 nfsServerIP: ""
 nfsMountPath: ""
+nfsVersion: ""
 
 namespaceOverride: ""
 # This is a YAML-formatted file.

@@ -1,0 +1,17 @@
+apiVersion: v1
+entries:
+  nfs-storage:
+  - apiVersion: v2
+    appVersion: v4.0.1
+    created: "2025-03-08T17:05:33.706275353Z"
+    description: A Helm chart to deploy NFS storage class to Kubernetes
+    digest: 822f508e3945e4d5b4db942f24a534c1232f6e1d9a52011ba5d3b1b193ab3952
+    maintainers:
+    - email: kwaberski@guardanet.net
+      name: Krzysztof Waberski
+    name: nfs-storage
+    type: application
+    urls:
+    - https://github.com/kwaberski/helm-charts/releases/download/nfs-storage-0.1.1/nfs-storage-0.1.1.tgz
+    version: 0.1.1
+generated: "2025-03-08T17:05:33.706281164Z"
